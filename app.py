@@ -12,12 +12,12 @@ st.markdown("**Đồ án Khóa luận tốt nghiệp Đại học - Ngành Khoa 
 # SIDEBAR: TÙY CHỌN ĐIỀU KHIỂN
 # ==============================================================================
 st.sidebar.header("⚙️ Bảng Điều Khiển Hệ Thống")
-plant_choice = st.sidebar.selectbox("Chọn Nhà máy:", ["Plant 1 (Ấn Độ - 22 Inverters)", "Plant 2 (Ấn Độ - 22 Inverters)"])
-model_choice = st.sidebar.selectbox("Chọn Mô hình AI Dự báo:", ["GRU (Deep Learning - Khuyên dùng)", "LSTM (Deep Learning)", "XGBoost (Baseline ML)"])
+plant_choice = st.sidebar.selectbox("Chọn Nhà máy:", ["Plant 1", "Plant 2"])
+model_choice = st.sidebar.selectbox("Chọn Mô hình AI Dự báo:", ["GRU (Deep Learning)", "LSTM (Deep Learning)", "XGBoost (Baseline ML)"])
 inverter_choice = st.sidebar.selectbox("Chọn Bộ nghịch lưu (Inverter):", [f"Inverter_{i}" for i in range(1, 23)])
 
 st.sidebar.divider()
-st.sidebar.info("💡 **Gợi ý cho Hội đồng:** Mô hình GRU kết hợp dữ liệu cảm biến thời tiết giúp dự báo bám sát các pha mây che và tối ưu hóa kế hoạch bảo trì.")
+st.sidebar.info("💡 Mô hình GRU kết hợp dữ liệu cảm biến thời tiết giúp dự báo bám sát các pha mây che và tối ưu hóa kế hoạch bảo trì.")
 
 # ==============================================================================
 # PHẦN 1: CÁC CHỈ SỐ VẬN HÀNH THỜI GIAN THỰC (KPI CARDS)
