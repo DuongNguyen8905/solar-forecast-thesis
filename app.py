@@ -17,7 +17,7 @@ model_choice = st.sidebar.selectbox("Chọn Mô hình AI Dự báo:", ["GRU (Dee
 inverter_choice = st.sidebar.selectbox("Chọn Bộ nghịch lưu (Inverter):", [f"Inverter_{i}" for i in range(1, 23)])
 
 st.sidebar.divider()
-st.sidebar.info("💡 **Gợi ý cho Hội đồng:** Mô hình GRU kết hợp dữ liệu cảm biến thời tiết giúp dự báo bám sát các pha mây che và tối ưu hóa kế hoạch bảo trì.")
+st.sidebar.info("💡 Mô hình GRU kết hợp dữ liệu cảm biến thời tiết giúp dự báo bám sát các pha mây che và tối ưu hóa kế hoạch bảo trì.")
 
 # ==============================================================================
 # PHẦN 1: CÁC CHỈ SỐ VẬN HÀNH THỜI GIAN THỰC (KPI CARDS)
