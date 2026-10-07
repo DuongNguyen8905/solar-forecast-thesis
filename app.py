@@ -72,7 +72,39 @@ df_chart = pd.DataFrame({
     f'Dự báo {model_choice.split()[0]}': np.round(pred_power, 1)
 }).set_index('Thời gian (15 phút/bước)')
 
-st.line_chart(df_chart)
+import plotly.graph_objects as go
+
+# Tạo đồ thị chuyên nghiệp đã khóa cứng khung hình (không bị kéo lệch)
+fig = go.Figure()
+
+fig.add_trace(go.Scatter(
+    x=df_chart.index, 
+    y=df_chart['Công suất Thực tế (Actual)'], 
+    mode='lines', 
+    name='Thực Tế (Actual)', 
+    line=dict(color='#1E293B', width=2.5)
+))
+
+fig.add_trace(go.Scatter(
+    x=df_chart.index, 
+    y=df_chart[f'Dự báo {model_choice.split()[0]}'], 
+    mode='lines', 
+    name=f'Dự Báo ({model_choice.split()[0]})', 
+    line=dict(color='#8B5CF6', width=2.5, dash='dash')
+))
+
+# Khóa cố định trục X và Y (fixedrange=True: Chống kéo lệch hình)
+fig.update_layout(
+    xaxis=dict(fixedrange=True, title="Thời gian (Chu kỳ 15 phút trong 24 giờ)"),
+    yaxis=dict(fixedrange=True, title="Công suất AC (kW)", range=[0, 1000]),
+    hovermode="x unified",
+    height=430,
+    margin=dict(l=20, r=20, t=30, b=30),
+    template="plotly_white"
+)
+
+# Hiển thị đồ thị (Ẩn luôn thanh công cụ zoom/pan để tránh bấm nhầm)
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
 
 st.markdown("---")
 
