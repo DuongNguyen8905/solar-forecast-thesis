@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
 
 # Cấu hình trang
 st.set_page_config(page_title="Solar Power Forecasting & O&M Dashboard", layout="wide")
@@ -31,7 +30,7 @@ metrics_dict = {
     "LSTM (Deep Learning)": {"mae": "26.84 kW", "rmse": "44.12 kW", "nmae": "3.16%", "acc": "Độ chính xác cao"},
     "XGBoost (Baseline ML)": {"mae": "24.15 kW", "rmse": "41.24 kW", "nmae": "2.85%", "acc": "Baseline chuẩn"}
 }
-m_info = metrics_dict.get(model_choice, metrics_dict["GRU (Deep Learning)"])
+m_info = metrics_dict[model_choice]
 
 col1.metric("Công suất phát hiện tại", "14,820 kW", "+3.4% so với TB")
 col2.metric("Sai số MAE của mô hình", m_info["mae"], m_info["acc"])
@@ -73,28 +72,7 @@ df_chart = pd.DataFrame({
     f'Dự báo {model_choice.split()[0]}': np.round(pred_power, 1)
 }).set_index('Thời gian (15 phút/bước)')
 
-# Vẽ đồ thị 2 đường xanh chuẩn như ban đầu, nhưng KHÓA TRỤC CỐ ĐỊNH chống kéo lệch
-fig = go.Figure()
-fig.add_trace(go.Scatter(
-    x=df_chart.index,
-    y=df_chart['Công suất Thực tế (Actual)'],
-    name='Công suất Thực tế (Actual)',
-    line=dict(color='#0068C9', width=2)
-))
-fig.add_trace(go.Scatter(
-    x=df_chart.index,
-    y=df_chart[f'Dự báo {model_choice.split()[0]}'],
-    name=f'Dự báo {model_choice.split()[0]}',
-    line=dict(color='#29B5E8', width=2, dash='dash')
-))
-fig.update_layout(
-    xaxis=dict(title='Thời gian (15 phút/bước)', fixedrange=True),
-    yaxis=dict(title='Công suất AC (kW)', fixedrange=True),
-    height=400,
-    margin=dict(l=10, r=10, t=10, b=10),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-)
-st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+st.line_chart(df_chart)
 
 st.markdown("---")
 
