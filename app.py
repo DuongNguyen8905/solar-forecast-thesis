@@ -74,38 +74,64 @@ df_chart = pd.DataFrame({
 
 import plotly.graph_objects as go
 
-# Tạo đồ thị chuyên nghiệp đã khóa cứng khung hình (không bị kéo lệch)
+# 1. Khởi tạo đồ thị cao cấp
 fig = go.Figure()
 
+# Đường 1: Công suất Thực tế (Màu Vàng Cam Mặt Trời + Đổ bóng diện tích sản lượng)
 fig.add_trace(go.Scatter(
-    x=df_chart.index, 
-    y=df_chart['Công suất Thực tế (Actual)'], 
-    mode='lines', 
-    name='Thực Tế (Actual)', 
-    line=dict(color='#1E293B', width=2.5)
+    x=df_chart.index,
+    y=df_chart['Công suất Thực tế (Actual)'],
+    mode='lines',
+    name='☀️ Thực Tế (Actual)',
+    line=dict(color='#F59E0B', width=3),
+    fill='tozeroy',
+    fillcolor='rgba(245, 158, 11, 0.15)', # Vùng đổ bóng mờ ấm áp
+    hovertemplate='<b>Thực tế:</b> %{y:.1f} kW<extra></extra>'
 ))
 
+# Đường 2: Dự báo AI (Tự động đổi màu công nghệ theo mô hình bạn chọn)
+model_short_name = model_choice.split()[0]
+color_ai = '#8B5CF6' if "GRU" in model_choice else ('#10B981' if "LSTM" in model_choice else '#EC4899')
+
 fig.add_trace(go.Scatter(
-    x=df_chart.index, 
-    y=df_chart[f'Dự báo {model_choice.split()[0]}'], 
-    mode='lines', 
-    name=f'Dự Báo ({model_choice.split()[0]})', 
-    line=dict(color='#8B5CF6', width=2.5, dash='dash')
+    x=df_chart.index,
+    y=df_chart[f'Dự báo {model_short_name}'],
+    mode='lines',
+    name=f'⚡ Dự Báo AI ({model_short_name})',
+    line=dict(color=color_ai, width=2.5, dash='dash'),
+    hovertemplate='<b>Dự báo AI:</b> %{y:.1f} kW<extra></extra>'
 ))
 
-# Khóa cố định trục X và Y (fixedrange=True: Chống kéo lệch hình)
-fig.update_layout(
-    xaxis=dict(fixedrange=True, title="Thời gian (Chu kỳ 15 phút trong 24 giờ)"),
-    yaxis=dict(fixedrange=True, title="Công suất AC (kW)", range=[0, 1000]),
-    hovermode="x unified",
-    height=430,
-    margin=dict(l=20, r=20, t=30, b=30),
-    template="plotly_white"
+# Đánh dấu huy hiệu Đỉnh phát cực đại lúc giữa trưa (Peak Annotation)
+max_val = df_chart['Công suất Thực tế (Actual)'].max()
+max_idx = df_chart['Công suất Thực tế (Actual)'].idxmax()
+
+fig.add_annotation(
+    x=max_idx,
+    y=max_val,
+    text=f"🔥 Đỉnh phát: {max_val:.0f} kW",
+    showarrow=True,
+    arrowhead=2,
+    arrowsize=1,
+    arrowcolor='#D97706',
+    ax=0,
+    ay=-35,
+    font=dict(size=12, color='#B45309', family='Arial, sans-serif'),
+    bgcolor='rgba(254, 243, 199, 0.95)',
+    bordercolor='#F59E0B',
+    borderwidth=1.5,
+    borderpad=4
 )
 
-# Hiển thị đồ thị (Ẩn luôn thanh công cụ zoom/pan để tránh bấm nhầm)
-st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
-
+# Cấu hình giao diện chuẩn mực, sạch sẽ và KHÓA CỐ ĐỊNH TRỤC
+fig.update_layout(
+    title=dict(
+        text=f"<b>Biểu Đồ So Sánh Công Suất Phát: Thực Tế vs Dự Báo {model_short_name}</b>",
+        font=dict(size=16, color='#1E293B')
+    ),
+    xaxis=dict(
+        title="<b>Thời Gian Trong Ngày (Mốc 15 phút)</b>",
+        fixedrange=True, # Khóa chống kéo lệch trục
 st.markdown("---")
 
 # ==============================================================================
