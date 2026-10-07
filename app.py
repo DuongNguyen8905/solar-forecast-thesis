@@ -6,7 +6,7 @@ import numpy as np
 st.set_page_config(page_title="Solar Power Forecasting & O&M Dashboard", layout="wide")
 
 st.title("☀️ Hệ thống Dự báo Công suất & Giám sát Bất thường Nhà máy Điện Mặt Trời")
-st.markdown("**Đồ án Khóa luận tốt nghiệp Đại học - Ngành Khoa học Dữ liệu / Trí tuệ Nhân tạo**")
+st.markdown("**Đồ án Khóa luận tốt nghiệp - Ngành Khoa học Dữ liệu**")
 
 # ==============================================================================
 # SIDEBAR: TÙY CHỌN ĐIỀU KHIỂN
