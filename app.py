@@ -40,17 +40,15 @@ col4.metric("Sai số chuẩn hóa (nMAE)", m_info["nmae"], "Chuẩn quốc tế
 st.markdown("---")
 
 # ==============================================================================
-# PHẦN 2: ĐỒ THỊ CỐ ĐỊNH TRỤC VỚI PLOTLY (KHÔNG BỊ LỆCH/TRÔI)
+# PHẦN 2: BIỂU ĐỒ CHUỖI THỜI GIAN CHUẨN ĐẶC TÍNH ĐIỆN MẶT TRỜI (HÌNH CHUÔNG)
 # ==============================================================================
 st.subheader(f"📊 Đồ thị So sánh Công suất Thực tế vs Dự báo ({model_choice} - {inverter_choice})")
-
-import plotly.graph_objects as go
 
 # Tạo dữ liệu mô phỏng chuẩn chu kỳ ngày đêm (Hình chuông parabol thực tế)
 time_steps = 96 # 96 mốc 15 phút = 24 giờ
 hours = np.linspace(0, 24, time_steps)
 
-# Công suất mặt trời phát từ 6h sáng đến 18h tối (đỉnh lúc 12h trưa)
+# Công suất mặt trời chỉ phát từ 6h sáng đến 18h tối (đỉnh lúc 12h trưa)
 daylight_mask = (hours >= 6) & (hours <= 18)
 solar_profile = np.zeros(time_steps)
 solar_profile[daylight_mask] = np.sin((hours[daylight_mask] - 6) / 12 * np.pi) * 850
@@ -68,30 +66,15 @@ else: # XGBoost
     pred_power = np.maximum(0, solar_profile + np.random.normal(0, 22, time_steps) * daylight_mask)
 
 time_labels = [f"{int(h):02d}:{int((h%1)*60):02d}" for h in hours]
+df_chart = pd.DataFrame({
+    'Thời gian (15 phút/bước)': time_labels,
+    'Công suất Thực tế (Actual)': np.round(actual_power, 1),
+    f'Dự báo {model_choice.split()[0]}': np.round(pred_power, 1)
+}).set_index('Thời gian (15 phút/bước)')
 
-# Vẽ biểu đồ dùng Plotly với cấu hình khóa cứng trục (Fixed Axis)
-fig = go.Figure()
-fig.add_trace(go.Scatter(x=time_labels, y=actual_power, mode='lines', name='Công suất Thực tế (Actual)', line=dict(color='blue', width=2)))
-fig.add_trace(go.Scatter(x=time_labels, y=pred_power, mode='lines', name=f'Dự báo ({model_choice.split()[0]})', line=dict(color='purple', width=2, dash='dash')))
+st.line_chart(df_chart)
 
-fig.update_layout(
-    xaxis=dict(
-        title='Thời gian trong ngày (Chu kỳ 15 phút)',
-        tickangle=-45,
-        fixedrange=True  # Khóa cứng trục X, không cho zoom/pan lệch trục
-    ),
-    yaxis=dict(
-        title='Công suất AC (kW)',
-        range=[-50, 1000],  # Cố định khoảng giá trị trục Y từ -50 đến 1000 kW
-        fixedrange=True  # Khóa cứng trục Y, không cho trôi lên xuống
-    ),
-    height=450,
-    margin=dict(l=20, r=20, t=30, b=20),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-)
-
-# Hiển thị biểu đồ lên Streamlit và cố định khung nhìn (config fixed)
-st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False, 'scrollZoom': False})
+st.markdown("---")
 
 # ==============================================================================
 # PHẦN 3: NGHIỆP VỤ PHÁT HIỆN SỰ CỐ & BẢO TRÌ NHÀ MÁY (O&M)
