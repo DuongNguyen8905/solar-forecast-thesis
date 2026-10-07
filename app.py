@@ -131,7 +131,21 @@ fig.update_layout(
     ),
     xaxis=dict(
         title="<b>Thời Gian Trong Ngày (Mốc 15 phút)</b>",
-        fixedrange=True, # Khóa chống kéo lệch trục
+        fixedrange=True
+    ),
+    yaxis=dict(
+        title="<b>Công Suất Phát AC (kW)</b>",
+        range=[0, 1050],
+        fixedrange=True
+    ),
+    hovermode="x unified",
+    height=450,
+    margin=dict(l=20, r=20, t=40, b=30)
+)
+
+# Lệnh hiển thị biểu đồ ra giao diện Web (Khóa nút zoom/pan)
+st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+
 st.markdown("---")
 
 # ==============================================================================
