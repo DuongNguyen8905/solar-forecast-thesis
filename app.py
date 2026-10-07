@@ -26,7 +26,7 @@ col1, col2, col3, col4 = st.columns(4)
 
 # Gán chỉ số tương ứng theo từng mô hình đã thực nghiệm
 metrics_dict = {
-    "GRU (Deep Learning - Khuyên dùng)": {"mae": "22.95 kW", "rmse": "39.42 kW", "nmae": "2.71%", "acc": "Tối ưu nhất 🏆"},
+    "GRU (Deep Learning)": {"mae": "22.95 kW", "rmse": "39.42 kW", "nmae": "2.71%", "acc": "Tối ưu nhất 🏆"},
     "LSTM (Deep Learning)": {"mae": "26.84 kW", "rmse": "44.12 kW", "nmae": "3.16%", "acc": "Độ chính xác cao"},
     "XGBoost (Baseline ML)": {"mae": "24.15 kW", "rmse": "41.24 kW", "nmae": "2.85%", "acc": "Baseline chuẩn"}
 }
